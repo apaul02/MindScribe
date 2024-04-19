@@ -2,12 +2,22 @@ import axios from "axios"
 import { Appbar } from "../components/Appbar"
 import { BACKEND_URL } from "../config"
 import { ChangeEvent, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
+import { UseUser } from "../hooks"
+import { Spinner } from "../components/Spinner"
 
 export const Publish = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const user = UseUser();
+  if(user.loading){
+    return <Spinner />
+  }
+
+  if(!user.detais){
+    return <Navigate to={"/signin"} />
+  }
   return <div>
     <Appbar />
     <div className="flex justify-center pt-8 "> 

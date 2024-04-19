@@ -1,15 +1,24 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { Fullblog } from "../components/Fullblog"
-import { useBlog } from "../hooks"
+import { UseUser, useBlog } from "../hooks"
 import { Spinner } from "../components/Spinner";
 import { Appbar } from "../components/Appbar";
 
 export const Blog = () => {
-  const { id } = useParams()
-  const { loading, blog } = useBlog({
+
+  const { id } = useParams();
+  const { loader, blog } = useBlog({
     id: id || ""
   });
-  if(loading){
+  const user = UseUser()
+  if(user.loading){
+    return <Spinner />
+  }
+  if(!user.detais){
+    return <Navigate to={"/signin"} />
+  }
+
+  if(loader){
     return<div>
       <Appbar />
       <div className=" h-screen flex flex-col justify-center">

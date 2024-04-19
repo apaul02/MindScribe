@@ -12,7 +12,7 @@ export interface Blog {
 }
 
 export const useBlog = ({ id }: { id: string}) => {
-  const [loading, setLoading] = useState(true);
+  const [loader, setLoader] = useState(true);
   const [blog, setBlog] = useState<Blog>({
     title: "None",
     content: "None",
@@ -31,11 +31,11 @@ export const useBlog = ({ id }: { id: string}) => {
     })
       .then(response => {
         setBlog(response.data.blog);
-        setLoading(false);
+        setLoader(false);
       } )
   }, [])
   return {
-    loading,
+    loader,
     blog
   }
 }
@@ -59,5 +59,31 @@ export const useBlogs = () => {
   return {
     loading,
     blogs
+  }
+}
+
+export const UseUser = () => {
+  const [loading, setLoading] = useState(true);
+  const [detais, setDetails] = useState(null);
+  async function getDetails() {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/api/v1/user/me`, {
+        headers: {
+          Authorization : localStorage.getItem("token")
+        }
+      })
+      setDetails(res.data.userDetails)
+    }catch(e) {
+      console.error(e)
+    }
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    getDetails()
+  }, [])
+  return {
+    loading,
+    detais
   }
 }

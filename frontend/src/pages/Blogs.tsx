@@ -1,10 +1,20 @@
+import { Navigate } from "react-router-dom";
 import { Appbar } from "../components/Appbar"
 import { BlogCard } from "../components/BlogCard"
 import { BlogSkeleton } from "../components/BlogSkeleton";
-import { useBlogs } from "../hooks"
+import { UseUser, useBlogs } from "../hooks"
+import { Spinner } from "../components/Spinner";
 
 export const Blogs = () => {
   const {blogs, loading} = useBlogs();
+  const user = UseUser();
+  if(user.loading){
+    return <Spinner />
+  }
+
+  if(!user.detais){
+    return <Navigate to={"/signin"} />
+  }
 
   if(loading){
     return <div>

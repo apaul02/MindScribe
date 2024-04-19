@@ -92,3 +92,35 @@ userRouter.post('/signin', async (c) => {
     })
   }
 })
+
+userRouter.get('/me', async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl:c.env.DATABASE_URL,
+  }).$extends(withAccelerate())
+  const authHeader = c.req.header('authorization') || "";
+  const user = await verify(authHeader, c.env.JWT_SECRET);
+
+  if(!user){
+    c.status(403)
+    return c.json({
+      msg : "You are not logged in"
+    })
+  }
+  try {
+    const userDetails = await prisma.user.findUnique({
+      where: {
+        id : user.id
+      },
+      select: {
+        username: true
+      }
+    })
+    return c.json({
+      userDetails
+    })
+  }catch(e){
+    return c.json({
+      msg : "no user cuh"
+    })
+  }
+})
