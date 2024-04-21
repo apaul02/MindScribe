@@ -72,7 +72,7 @@ export const UseUser = () => {
           Authorization : localStorage.getItem("token")
         }
       })
-      setDetails(res.data.userDetails)
+      setDetails(res.data.userDetails.username)
     }catch(e) {
       console.error(e)
     }

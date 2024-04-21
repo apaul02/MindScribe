@@ -98,29 +98,23 @@ userRouter.get('/me', async (c) => {
     datasourceUrl:c.env.DATABASE_URL,
   }).$extends(withAccelerate())
   const authHeader = c.req.header('authorization') || "";
-  const user = await verify(authHeader, c.env.JWT_SECRET);
-
-  if(!user){
-    c.status(403)
-    return c.json({
-      msg : "You are not logged in"
-    })
-  }
   try {
+    const user = await verify(authHeader, c.env.JWT_SECRET);
     const userDetails = await prisma.user.findUnique({
-      where: {
+      where : {
         id : user.id
       },
-      select: {
-        username: true
+      select : {
+        username : true
       }
     })
     return c.json({
       userDetails
     })
-  }catch(e){
+  }catch(err){
+    c.status(403);
     return c.json({
-      msg : "no user cuh"
+      msg : "Invalid"
     })
   }
 })
